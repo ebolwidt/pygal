@@ -143,6 +143,10 @@ class Config(object):
         "You can specify explicit y labels",
         "Must be a list of numbers", float)
     
+    y_labels_descriptions = Key(
+        None, dict, "Label",
+        "You can specify descriptions for y labels")
+    
     y_label_min = Key(
         None, int, "Label", "Minimum label value for y", "value")
     

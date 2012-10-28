@@ -22,6 +22,7 @@ Bar chart
 """
 
 from __future__ import division
+import functools
 from pygal.graph.graph import Graph
 from pygal.util import swap, ident, compute_scale, decorate
 
@@ -77,6 +78,13 @@ class Bar(Graph):
                 bar, val, x_center, y_center, classes="centered")
             self._static_value(serie_node, val, x_center, y_center)
 
+    def _describe_label(self, format, y_val):
+        if self.y_labels_descriptions and y_val in self.y_labels_descriptions:
+            description = self.y_labels_descriptions[y_val]
+            return '%s %s' % (description, format(y_val))
+        else:
+            return format(y_val)
+    
     def _compute(self):
         ymin = self.y_label_min if self.y_label_min is not None else self._min
         ymax = self.y_label_max if self.y_label_max is not None else self._max
@@ -95,10 +103,15 @@ class Bar(Graph):
         y_pos = compute_scale(
             self._box.ymin, self._box.ymax, self.logarithmic, self.order_min
         ) if not self.y_labels else map(float, self.y_labels)
+        
+        if self.y_labels_descriptions:
+            y_pos.extend([key for key in self.y_labels_descriptions.keys() if key >= self._box.ymin and key <= self._box.ymax])
+            y_pos.sort()
 
         self._x_labels = self.x_labels and zip(self.x_labels, [
             (i + .5) / self._len for i in range(self._len)])
-        self._y_labels = zip(map(self._format, y_pos), y_pos)
+        format = functools.partial(self._describe_label, self._format)
+        self._y_labels = zip(map(format, y_pos), y_pos)
 
     def _plot(self):
         for index, serie in enumerate(self.series):
