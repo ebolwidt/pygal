@@ -78,17 +78,20 @@ class Bar(Graph):
             self._static_value(serie_node, val, x_center, y_center)
 
     def _compute(self):
-        if self._min:
-            self._box.ymin = min(self._min, self.zero)
-        if self._max:
-            self._box.ymax = max(self._max, self.zero)
+        ymin = self.y_label_min if self.y_label_min is not None else self._min
+        ymax = self.y_label_max if self.y_label_max is not None else self._max
+        
+        if ymin:
+            self._box.ymin = min(ymin, self.zero)
+        if ymax:
+            self._box.ymax = max(ymax, self.zero)
 
         x_pos = [
             x / self._len for x in range(self._len + 1)
         ] if self._len > 1 else [0, 1]  # Center if only one value
 
         self._points(x_pos)
-
+        
         y_pos = compute_scale(
             self._box.ymin, self._box.ymax, self.logarithmic, self.order_min
         ) if not self.y_labels else map(float, self.y_labels)
