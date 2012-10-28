@@ -142,6 +142,12 @@ class Config(object):
         None, list, "Label",
         "You can specify explicit y labels",
         "Must be a list of numbers", float)
+    
+    y_label_min = Key(
+        None, int, "Label", "Minimum label value for y", "value")
+    
+    y_label_max = Key(
+        None, int, "Label", "Maximum label value for y", "value")
 
     x_label_rotation = Key(
         0, int, "Label", "Specify x labels rotation angles", "in degrees")
